@@ -1,0 +1,35 @@
+version: "3.3"
+
+services:
+
+  mysql-db:
+    image: mysql:5.6
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'shamashit'
+    ports:
+      - target: 3307
+        published: 3307
+        protocol: tcp 
+    volumes:
+      - /home/mysql/data:/home/vagrant/mysql:rw
+  
+  springboot-app:
+  
+    image: bouguerra03/pfe:134
+    container_name: springboot-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3307/shamashit?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      MYSQL_HOST: mysql-db
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: shamashit
+    restart: on-failure
+    ports:
+      - 8087:8087 
+    links:
+      - mysql-db
